@@ -30,13 +30,16 @@ class UAVCAN_EXPORT Frame
     bool end_of_transfer_;
     bool toggle_;
 
+    TransferProtocol CAN_protocol_;
+
 public:
     Frame() :
         transfer_type_(TransferType(NumTransferTypes)),                // Invalid value
         payload_len_(0),
         start_of_transfer_(false),
         end_of_transfer_(false),
-        toggle_(false)
+        toggle_(false),
+        CAN_protocol_(UAVCANProtocol)
     { }
 
     Frame(DataTypeID data_type_id,
@@ -53,7 +56,8 @@ public:
         transfer_id_(transfer_id),
         start_of_transfer_(false),
         end_of_transfer_(false),
-        toggle_(false)
+        toggle_(false),
+        CAN_protocol_(UAVCANProtocol)
     {
         UAVCAN_ASSERT((transfer_type == TransferTypeMessageBroadcast) == dst_node_id.isBroadcast());
         UAVCAN_ASSERT(data_type_id.isValidForDataTypeKind(getDataTypeKindForTransferType(transfer_type)));
@@ -77,6 +81,9 @@ public:
     NodeID getSrcNodeID()          const { return src_node_id_; }
     NodeID getDstNodeID()          const { return dst_node_id_; }
     TransferID getTransferID()     const { return transfer_id_; }
+
+    void setCANProtocol(TransferProtocol CAN_protocol) { CAN_protocol_ = CAN_protocol; }
+    TransferProtocol getCANProtocol() const { return CAN_protocol_; }
 
     void setStartOfTransfer(bool x) { start_of_transfer_ = x; }
     void setEndOfTransfer(bool x)   { end_of_transfer_ = x; }
